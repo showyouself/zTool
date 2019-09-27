@@ -5,6 +5,7 @@ import org.apache.ibatis.javassist.ClassPool;
 import org.apache.ibatis.javassist.CtClass;
 import org.apache.ibatis.javassist.CtMethod;
 import org.apache.ibatis.javassist.CtNewMethod;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
@@ -19,10 +20,13 @@ import javax.annotation.PostConstruct;
 @Service
 public class EnableToJsonImpl{
 
+    @Value("${com.zengbingo.enableToJson.pkg}")
+    private String pkg;
+
     @PostConstruct
     public void init(){
             //你要找到包名前缀
-            final String pkgNamePrefix = "";
+            final String pkgNamePrefix = pkg;
             try {
                 String pattern = ResourcePatternResolver.CLASSPATH_ALL_URL_PREFIX
                         + ClassUtils.convertClassNameToResourcePath(pkgNamePrefix)
