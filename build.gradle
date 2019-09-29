@@ -2,7 +2,8 @@ plugins {
     id 'java'
 }
 
-apply plugin:'maven'
+apply plugin:'maven-publish'
+apply plugin: 'signing'
 
 group 'com.zengbingo'
 version '0.0.1'
@@ -25,4 +26,75 @@ dependencies {
     compile ("com.baomidou:mybatis-plus-boot-starter:3.1.2")
 
     testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+
+task sourcesJar(type: Jar) {
+    from sourceSets.main.allJava
+    classifier = 'sources'
+}
+
+task javadocJar(type: Jar) {
+    from javadoc
+    classifier = 'javadoc'
+}
+
+
+publishing {
+    // 定义发布什么
+    publications {
+        mavenJava(MavenPublication) {
+            // groupId = project.group
+            // artifactId = project.name
+            // version = project.version
+            // groupId,artifactId,version，如果不定义，则会按照以上默认值执行
+            from components.java
+            artifact sourcesJar
+            artifact javadocJar
+            pom {
+                // 构件名称
+                // 区别于artifactId，可以理解为artifactName
+                name = 'zTool'
+                // 构件描述
+                description = 'Use a quick annotation，Convert pojo`s toString result to json'
+                // 构件主页
+                url = 'https://github.com/showyouself/zTool.git'
+                // 许可证名称和地址
+                licenses {
+                    license {
+                        name = 'The Apache License, Version 2.0'
+                        url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+                    }
+                }
+                // 开发者信息
+                developers {
+                    developer {
+                        name = 'zengbin'
+                        email = '200854748@qq.com'
+                    }
+                }
+                // 版本控制仓库地址
+                scm {
+                    url = 'https://github.com/showyouself/zTool'
+                    connection = 'scm:git:https://github.com/showyouself/zTool.git'
+                    developerConnection = 'scm:git:git@github.com:showyouself/zTool.git'
+                }
+            }
+        }
+    }
+    // 定义发布到哪里
+    repositories {
+        maven {
+            url "https://oss.sonatype.org/service/local/staging/deploy/maven2"
+            credentials {
+                username 2
+                password 1
+            }
+        }
+    }
+}
+
+
+signing {
+    sign publishing.publications.mavenJava
 }
